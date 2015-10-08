@@ -41,6 +41,35 @@
         }
 
         [Fact]
+        public void InsertIntoColumnsMultipleValues()
+        {
+            var sqlBuilder = new InsertSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Into("Table")
+                .Columns("Column1", "Column2")
+                .Values("Foo", 12)
+                .Values("Bar", 24)
+                .ToSqlQuery();
+
+            Assert.Equal("INSERT INTO Table (Column1,Column2) VALUES (?,?),(?,?)", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[2].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(24, sqlQuery.Arguments[1].Value);
+        }
+
+        [Fact]
         public void InsertIntoColumnsValuesWithSqlCharacters()
         {
             var sqlBuilder = new InsertSqlBuilder(MsSqlCharacters.Instance);
@@ -60,6 +89,35 @@
 
             Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
             Assert.Equal(12, sqlQuery.Arguments[1].Value);
+        }
+
+        [Fact]
+        public void InsertIntoColumnsMultipleValuesWithSqlCharacters()
+        {
+            var sqlBuilder = new InsertSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Into("Table")
+                .Columns("Column1", "Column2")
+                .Values("Foo", 12)
+                .Values("Bar", 24)
+                .ToSqlQuery();
+
+            Assert.Equal( "INSERT INTO [Table] ([Column1],[Column2]) VALUES (@p0,@p1),(@p2,@p3)", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[2].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(24, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]

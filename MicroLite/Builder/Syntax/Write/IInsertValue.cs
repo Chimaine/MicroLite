@@ -22,6 +22,6 @@ namespace MicroLite.Builder.Syntax.Write
         /// </summary>
         /// <param name="columnValues">Values for the columns to be inserted.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IToSqlQuery Values(params object[] columnValues);
+        IInsertValue Values(params object[] columnValues);
     }
 }

@@ -10,6 +10,9 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+
+using System.Linq;
+
 namespace MicroLite.Builder
 {
     using System;
@@ -67,26 +70,35 @@ namespace MicroLite.Builder
             return this.Into(objectInfo);
         }
 
-        public IToSqlQuery Values(params object[] columnValues)
+        public IInsertValue Values(params object[] columnValues)
         {
-            this.InnerSql.Append(" VALUES (");
+            if ((this.Arguments.Count > 0) && !this.SqlCharacters.SupportsInsertMultipleRows) 
+            {
+                throw new NotSupportedException("Current dialect does not support inserting multiple rows.");
+            }
 
             if (columnValues != null)
             {
-                for (int i = 0; i < columnValues.Length; i++)
+                this.InnerSql.Append(this.Arguments.Any() ? ", (" : " VALUES (");
+
+                for (int i = 0; i < columnValues.Length; i++) 
                 {
                     this.Arguments.Add(new SqlArgument(columnValues[i]));
 
                     this.InnerSql.Append(this.SqlCharacters.GetParameterName(i));
 
-                    if (i < columnValues.Length - 1)
+                    if (i < columnValues.Length - 1) 
                     {
                         this.InnerSql.Append(',');
                     }
                 }
-            }
 
-            this.InnerSql.Append(')');
+                this.InnerSql.Append(')');
+            } 
+            else 
+            {
+                this.InnerSql.Append(" VALUES ()");
+            }
 
             return this;
         }

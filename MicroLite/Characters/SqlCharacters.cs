@@ -174,6 +174,17 @@ namespace MicroLite.Characters
         }
 
         /// <summary>
+        /// Gets a value indicating whether the SQL Dialect supports inserting multiple rows in a single INSERT statement.
+        /// </summary>
+        public virtual bool SupportsInsertMultipleRows
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Escapes the specified SQL using the left and right delimiters.
         /// </summary>
         /// <param name="sql">The SQL to be escaped.</param>
